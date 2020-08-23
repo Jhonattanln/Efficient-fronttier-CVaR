@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from pypfopt.efficient_frontier import EfficientFrontier
-#from pypfopt.objective_functions import negative_cvar
+from pypfopt.objective_functions import negative_cvar
 from pypfopt.risk_models import CovarianceShrinkage
 
 ##Importar série de dados
@@ -15,4 +15,10 @@ for i in df:
 ##Criar a matrix de covariância eficiente
 covMatrix = CovarianceShrinkage(df)
 e_cov = covMatrix.ledoit_wolf()
-print(e_cov)
+
+##Fronteira
+ef = EfficientFrontier(None, e_cov)
+
+##Encontrando o CVaR 95% minimizando 
+optimal_weights = ef.custom_objective(negative_cvar, returns)
+print(optimal_weights)
